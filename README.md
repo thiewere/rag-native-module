@@ -11,9 +11,43 @@ npx cap sync
 
 ## API
 
-<docgen-index></docgen-index>
+<docgen-index>
+
+* [`echo(...)`](#echo)
+* [`addTwoNumbers(...)`](#addtwonumbers)
+
+</docgen-index>
 
 <docgen-api>
-<!-- run docgen to generate docs from the source -->
-<!-- More info: https://github.com/ionic-team/capacitor-docgen -->
+<!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
+
+### echo(...)
+
+```typescript
+echo(options: { value: string; }) => Promise<{ value: string; }>
+```
+
+| Param         | Type                            |
+| ------------- | ------------------------------- |
+| **`options`** | <code>{ value: string; }</code> |
+
+**Returns:** <code>Promise&lt;{ value: string; }&gt;</code>
+
+--------------------
+
+
+### addTwoNumbers(...)
+
+```typescript
+addTwoNumbers(options: { value1: number; value2: number; }) => Promise<{ value: number; }>
+```
+
+| Param         | Type                                             |
+| ------------- | ------------------------------------------------ |
+| **`options`** | <code>{ value1: number; value2: number; }</code> |
+
+**Returns:** <code>Promise&lt;{ value: number; }&gt;</code>
+
+--------------------
+
 </docgen-api>

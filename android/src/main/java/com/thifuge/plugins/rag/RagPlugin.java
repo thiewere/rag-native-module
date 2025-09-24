@@ -19,4 +19,15 @@ public class RagPlugin extends Plugin {
         ret.put("value", implementation.echo(value));
         call.resolve(ret);
     }
+
+    // Hier in RagPlugin.java
+    @PluginMethod
+    public void addTwoNumbers(PluginCall call) {
+        int value1 = call.getInt("value1");
+        int value2 = call.getInt("value2");
+       
+        JSObject ret = new JSObject();
+        ret.put("value", implementation.addTwoNumbers(value1, value2));
+        call.resolve(ret);
+    }
 }
