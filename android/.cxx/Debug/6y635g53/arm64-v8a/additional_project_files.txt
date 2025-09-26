@@ -1,0 +1,5 @@
+D:\DFKI\ToHyVe\capacitor-plugin\rag-native-module\cpp\nlohmann\json.hpp
+D:\DFKI\ToHyVe\capacitor-plugin\rag-native-module\cpp\nlohmann\json_fwd.hpp
+D:\DFKI\ToHyVe\capacitor-plugin\rag-native-module\cpp\minja\minja.hpp
+D:\DFKI\ToHyVe\capacitor-plugin\rag-native-module\cpp\minja\chat-template.hpp
+D:\DFKI\ToHyVe\capacitor-plugin\rag-native-module\android\src\cpp\jni-utils.h

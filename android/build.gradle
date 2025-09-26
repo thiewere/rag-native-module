@@ -33,6 +33,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+     // Neu hinzugefügt
+    externalNativeBuild {
+       cmake {
+           path file("src/cpp/CMakeLists.txt")
+           version "4.1.1"
+       }
+    }
+
     lintOptions {
         abortOnError false
     }
