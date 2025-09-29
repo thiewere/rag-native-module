@@ -1271,3 +1271,10 @@ Java_ai_annadata_plugin_capacitor_LlamaCpp_detokenizeNative(
 } // extern "C"
 
 } // namespace jni_utils
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_thifuge_plugins_rag_LlamaNative_nativeHello(JNIEnv *env, jclass clazz) {
+    // TODO: implement nativeHello()
+
+}

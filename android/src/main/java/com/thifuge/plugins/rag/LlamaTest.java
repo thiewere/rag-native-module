@@ -1,9 +1,20 @@
 package com.thifuge.plugins.rag;
 
-public class LlamaNative {
-    static  {
-        System.loadLibrary("llama-cpp-arm64");
-    }
+import android.util.Log;
 
-    public static native String nativeHello();
+import ai.annadata.plugin.capacitor.LlamaCpp;
+
+public class LlamaTest {
+    public static void testInit() {
+        // Modelpfad muss auf einem existierenden .gguf/.bin Modell liegen
+        String modelPath = "/sdcard/Download/ggml-model.gguf";
+        String[] searchPaths = new String[]{};
+
+        try {
+            long ctxId = LlamaCpp.initContextNative(modelPath, searchPaths, null);
+            Log.i("LlamaTest", "initContextNative returned: " + ctxId);
+        } catch (Throwable t) {
+            Log.e("LlamaTest", "Exception calling initContextNative", t);
+        }
+    }
 }
