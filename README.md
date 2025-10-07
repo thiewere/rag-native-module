@@ -15,6 +15,8 @@ npx cap sync
 
 * [`echo(...)`](#echo)
 * [`addTwoNumbers(...)`](#addtwonumbers)
+* [`runInference(...)`](#runinference)
+* [Interfaces](#interfaces)
 
 </docgen-index>
 
@@ -49,5 +51,35 @@ addTwoNumbers(options: { value1: number; value2: number; }) => Promise<{ value: 
 **Returns:** <code>Promise&lt;{ value: number; }&gt;</code>
 
 --------------------
+
+
+### runInference(...)
+
+```typescript
+runInference(options: RunInferenceOptions) => Promise<{ text: string; }>
+```
+
+| Param         | Type                                                                |
+| ------------- | ------------------------------------------------------------------- |
+| **`options`** | <code><a href="#runinferenceoptions">RunInferenceOptions</a></code> |
+
+**Returns:** <code>Promise&lt;{ text: string; }&gt;</code>
+
+--------------------
+
+
+### Interfaces
+
+
+#### RunInferenceOptions
+
+| Prop              | Type                |
+| ----------------- | ------------------- |
+| **`model`**       | <code>string</code> |
+| **`prompt`**      | <code>string</code> |
+| **`n_predict`**   | <code>number</code> |
+| **`temperature`** | <code>number</code> |
+| **`n_ctx`**       | <code>number</code> |
+| **`n_threads`**   | <code>number</code> |
 
 </docgen-api>

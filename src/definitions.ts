@@ -3,4 +3,17 @@ export interface RagPlugin {
 
   //diese ist meine neue Methode
   addTwoNumbers(options: {value1: number, value2: number}): Promise<{value: number}>;
+
+  runInference(options: RunInferenceOptions): Promise<{text: string}>;
 }
+
+
+export interface RunInferenceOptions {
+  model: string;
+  prompt: string;
+  n_predict?: number;
+  temperature?: number;
+  n_ctx?: number;
+  n_threads?: number;
+}
+
