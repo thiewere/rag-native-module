@@ -63,7 +63,7 @@
   },
   "peerDependencies": {
     "@capacitor/core": ">=7.0.0",
-    "llama-cpp-capacitor": "0.0.22"
+    "llama-cpp-capacitor": "^0.0.22"
   },
   "prettier": "@ionic/prettier-config",
   "swiftlint": "@ionic/swiftlint-config",

@@ -49,6 +49,18 @@ public class Rag {
         return finalPrompt; 
     }
 
+//    public string addDocument(String text) {
+//        Logger.info("Entry in AddDocument Method!!!!!!!!!!!!!!!!");
+//
+//        // Hole die "Box" für unsere DocumentChunk-Entität
+//        Box<DocumentChunk> chunkBox = boxStore.boxFor(DocumentChunk.class);
+//
+//        // Erstelle ein neues Chunk-Objekt und speichere es
+//        DocumentChunk newChunk = new DocumentChunk(text);
+//        chunkBox.put(newChunk);
+//
+//    }
+
 
     
 }
