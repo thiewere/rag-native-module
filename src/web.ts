@@ -22,16 +22,16 @@ export class RagWeb extends WebPlugin implements RagPlugin {
 
    private async ensureLlama() {
     if (this._llama) return;
-    try {
-      // DYNAMISCH importieren — wenn Host die peerDependency nicht installiert hat,
-      // wirft das und können eine hilfreiche Fehlermeldung zurückgeben.
+    // try {
+    //   // DYNAMISCH importieren — wenn Host die peerDependency nicht installiert hat,
+    //   // wirft das und können eine hilfreiche Fehlermeldung zurückgeben.
       
-      this._llama = await import('llama-cpp-capacitor');
-    } catch (err) {
-      throw new Error(
-        'llama-cpp-capacitor nicht gefunden. Installiere es in der Host-App (rag-native-app) als Abhängigkeit.'
-      );
-    }
+    //   this._llama = await import('llama-cpp-capacitor');
+    // } catch (err) {
+    //   throw new Error(
+    //     'llama-cpp-capacitor nicht gefunden. Installiere es in der Host-App (rag-native-app) als Abhängigkeit.'
+    //   );
+    // }
   }
 
    public async runInference(options: RunInferenceOptions): Promise<{ text: string }> {
@@ -55,5 +55,10 @@ export class RagWeb extends WebPlugin implements RagPlugin {
     // frmats: manche versionen liefern `text`, andere `content`
     const text = result?.text ?? result?.content ?? String(result);
     return { text };
+  }
+
+  async runRagInference(options: {prompt: string, model: string}): Promise<{text: string}> {
+    const res = options.prompt;
+    return {text: res};
   }
 }

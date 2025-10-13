@@ -111,4 +111,35 @@ public class RagPlugin extends Plugin {
             }
         });
     }
+
+    @PluginMethod
+    public void runRagInference(PluginCall call) {
+        String prompt = call.getString("prompt");
+        String model = call.getString("model");
+       
+        if(prompt == null || prompt.isEmpty()){
+            call.reject("Ein 'prompt' mit der Frage wird benötigt.");
+            return;
+        }
+
+        if(model == null || model.isEmpty()) {
+            call.reject("Ein 'model' für die Inferenz wird benötigt.");
+            return;
+        }
+
+        String finalPrompt = implementation.runRagInference(prompt, model);
+
+        // c) Generation: Wir verwenden unsere bestehende Logik, aber mit dem neuen Prompt.
+        //    Wir erstellen ein neues JSObject, um den alten 'call' nicht zu verändern.
+        JSObject ragCallData = new JSObject();
+        ragCallData.put("prompt", finalPrompt);
+        ragCallData.put("n_predict", call.getInt("n_predict", 50));
+
+
+        call.getData().put("model", model);
+        call.getData().put("prompt", finalPrompt);
+        call.getData().put("n_predict", 50);
+        
+        this.runInference(call); 
+    }
 }

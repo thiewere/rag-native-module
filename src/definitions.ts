@@ -5,6 +5,9 @@ export interface RagPlugin {
   addTwoNumbers(options: {value1: number, value2: number}): Promise<{value: number}>;
 
   runInference(options: RunInferenceOptions): Promise<{text: string}>;
+
+  runRagInference(options: {prompt: string, model: string}): Promise<{text: string}>;
+
 }
 
 

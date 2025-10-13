@@ -16,6 +16,7 @@ npx cap sync
 * [`echo(...)`](#echo)
 * [`addTwoNumbers(...)`](#addtwonumbers)
 * [`runInference(...)`](#runinference)
+* [`runRagInference(...)`](#runraginference)
 * [Interfaces](#interfaces)
 
 </docgen-index>
@@ -62,6 +63,21 @@ runInference(options: RunInferenceOptions) => Promise<{ text: string; }>
 | Param         | Type                                                                |
 | ------------- | ------------------------------------------------------------------- |
 | **`options`** | <code><a href="#runinferenceoptions">RunInferenceOptions</a></code> |
+
+**Returns:** <code>Promise&lt;{ text: string; }&gt;</code>
+
+--------------------
+
+
+### runRagInference(...)
+
+```typescript
+runRagInference(options: { prompt: string; model: string; }) => Promise<{ text: string; }>
+```
+
+| Param         | Type                                            |
+| ------------- | ----------------------------------------------- |
+| **`options`** | <code>{ prompt: string; model: string; }</code> |
 
 **Returns:** <code>Promise&lt;{ text: string; }&gt;</code>
 
