@@ -8,6 +8,9 @@ export interface RagPlugin {
 
   runRagInference(options: {prompt: string, model: string}): Promise<{text: string}>;
 
+  addDocument(options: {text: string}): Promise<{ success: boolean, id: number }>;
+  searchDocuments(options: {query: string}): Promise<{results: DocumentChunkResult[]}>;
+
 }
 
 
@@ -20,3 +23,8 @@ export interface RunInferenceOptions {
   n_threads?: number;
 }
 
+// (Optional) Definiere einen Typ für die Suchergebnisse
+export interface DocumentChunkResult {
+  id: number;
+  content: string;
+}

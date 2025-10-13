@@ -1,19 +1,23 @@
 package com.thifuge.plugins.rag;
 
+import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
+import java.util.List;
 import java.util.Map;
 
 import ai.annadata.plugin.capacitor.LlamaCpp;
+import io.objectbox.BoxStore;
 
 @CapacitorPlugin(name = "Rag")
 public class RagPlugin extends Plugin {
 
-    private Rag implementation = new Rag();
+    private BoxStore boxStore;
+    private Rag implementation;
 
         // ======================================================================
     // 2. Halte eine Instanz der LlamaCpp-Implementierung
@@ -22,6 +26,25 @@ public class RagPlugin extends Plugin {
     private LlamaCpp llamaCpp;
     private static final int CONTEXT_ID = 0; // Wir verwenden eine feste ID für unseren Kontext
     private boolean isContextInitialized = false;
+
+    /**
+     * Wird beim Start der App aufgerufen. Perfekt, um die Datenbank zu initialisieren.
+     */
+    @Override
+    public void load() {
+        super.load();
+
+        // 1. Initialisiere ObjectBox
+        if (boxStore == null) {
+            // MyObjectBox wird automatisch generiert, nachdem du das Projekt gebaut hast
+            boxStore = MyObjectBox.builder()
+                    .androidContext(getContext().getApplicationContext())
+                    .build();
+        }
+
+        // 2. Erstelle die Instanz unserer Logik-Klasse und übergebe den BoxStore
+        implementation = new Rag(boxStore);
+    }
 
       /**
      * Stellt sicher, dass die LlamaCpp-Instanz initialisiert ist (Lazy Loading).
@@ -141,5 +164,46 @@ public class RagPlugin extends Plugin {
         call.getData().put("n_predict", 50);
         
         this.runInference(call); 
+    }
+
+    @PluginMethod
+    public void addDocument(PluginCall call) {
+        String text = call.getString("text");
+        if (text == null || text.isEmpty()) {
+            call.reject("Bitte gib einen 'text' zum Hinzufügen an.");
+            return;
+        }
+
+        long newId = implementation.addDocument(text);
+
+        JSObject result = new JSObject();
+        result.put("success", true);
+        result.put("id", newId);
+        call.resolve(result);
+    }
+
+    @PluginMethod
+    public void searchDocuments(PluginCall call) {
+        String query = call.getString("query");
+        if (query == null) {
+            call.reject("Bitte gib eine 'query' für die Suche an.");
+            return;
+        }
+
+        List<DocumentChunk> results = implementation.searchDocuments(query);
+
+        // Konvetiere die Java-Liste in ein JSArray für Capacitor
+        JSArray resultArray = new JSArray();
+        for (DocumentChunk chunk : results) {
+            JSObject chunkObject = new JSObject();
+            chunkObject.put("id", chunk.id);
+            chunkObject.put("content", chunk.content);
+            resultArray.put(chunkObject);
+        }
+
+        JSObject ret = new JSObject();
+        ret.put("results", resultArray);
+        call.resolve(ret);
+
     }
 }

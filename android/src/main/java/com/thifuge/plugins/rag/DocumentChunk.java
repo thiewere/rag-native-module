@@ -17,6 +17,8 @@ public class DocumentChunk {
     @Index
     public String content;
 
+
+
     // Standard-Konstrutor wird von ObjectBox benötigt.
     public DocumentChunk() {}
 

@@ -17,6 +17,8 @@ npx cap sync
 * [`addTwoNumbers(...)`](#addtwonumbers)
 * [`runInference(...)`](#runinference)
 * [`runRagInference(...)`](#runraginference)
+* [`addDocument(...)`](#adddocument)
+* [`searchDocuments(...)`](#searchdocuments)
 * [Interfaces](#interfaces)
 
 </docgen-index>
@@ -84,6 +86,36 @@ runRagInference(options: { prompt: string; model: string; }) => Promise<{ text: 
 --------------------
 
 
+### addDocument(...)
+
+```typescript
+addDocument(options: { text: string; }) => Promise<{ success: boolean; id: number; }>
+```
+
+| Param         | Type                           |
+| ------------- | ------------------------------ |
+| **`options`** | <code>{ text: string; }</code> |
+
+**Returns:** <code>Promise&lt;{ success: boolean; id: number; }&gt;</code>
+
+--------------------
+
+
+### searchDocuments(...)
+
+```typescript
+searchDocuments(options: { query: string; }) => Promise<{ results: DocumentChunkResult[]; }>
+```
+
+| Param         | Type                            |
+| ------------- | ------------------------------- |
+| **`options`** | <code>{ query: string; }</code> |
+
+**Returns:** <code>Promise&lt;{ results: DocumentChunkResult[]; }&gt;</code>
+
+--------------------
+
+
 ### Interfaces
 
 
@@ -97,5 +129,13 @@ runRagInference(options: { prompt: string; model: string; }) => Promise<{ text: 
 | **`temperature`** | <code>number</code> |
 | **`n_ctx`**       | <code>number</code> |
 | **`n_threads`**   | <code>number</code> |
+
+
+#### DocumentChunkResult
+
+| Prop          | Type                |
+| ------------- | ------------------- |
+| **`id`**      | <code>number</code> |
+| **`content`** | <code>string</code> |
 
 </docgen-api>

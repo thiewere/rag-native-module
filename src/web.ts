@@ -1,6 +1,6 @@
 import { WebPlugin } from '@capacitor/core';
 
-import type { RagPlugin, RunInferenceOptions  } from './definitions';
+import type { RagPlugin, RunInferenceOptions, DocumentChunkResult  } from './definitions';
 
 
 export class RagWeb extends WebPlugin implements RagPlugin {
@@ -60,5 +60,16 @@ export class RagWeb extends WebPlugin implements RagPlugin {
   async runRagInference(options: {prompt: string, model: string}): Promise<{text: string}> {
     const res = options.prompt;
     return {text: res};
+  }
+
+  async addDocument(options: { text: string; }): Promise<{  success: boolean, id: number  }> {
+    console.log("Web nicht unterstützt", options.text)
+  
+    return {success: true, id: 1}
+  }
+
+  async searchDocuments(options: { query: string; }): Promise<{ results: DocumentChunkResult[]}> {
+    let result = [options.query]
+    return {results: []}
   }
 }

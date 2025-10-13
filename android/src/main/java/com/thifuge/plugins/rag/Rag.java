@@ -2,7 +2,14 @@ package com.thifuge.plugins.rag;
 
 import com.getcapacitor.Logger;
 
+import java.util.List;
+
+import io.objectbox.Box;
+import io.objectbox.BoxStore;
+
 public class Rag {
+
+    private BoxStore boxStore;
 
     // ======================================================================
     // 1. Definiere das Dummy-Dokument (unsere Wissensdatenbank) hier
@@ -16,6 +23,9 @@ public class Rag {
             "Kommunikationslatenz in suborbitalen Netzwerken um 90% reduzieren. " +
             "Das Kernteam besteht aus Dr. Schmidt, sowie den Ingenieuren Ben Carter und Maria Garcia.";
 
+  public Rag(BoxStore boxStore) {
+      this.boxStore = boxStore;
+  }
 
     public String echo(String value) {
         Logger.info("Echo", value);
@@ -49,18 +59,40 @@ public class Rag {
         return finalPrompt; 
     }
 
-//    public string addDocument(String text) {
-//        Logger.info("Entry in AddDocument Method!!!!!!!!!!!!!!!!");
-//
-//        // Hole die "Box" für unsere DocumentChunk-Entität
-//        Box<DocumentChunk> chunkBox = boxStore.boxFor(DocumentChunk.class);
-//
-//        // Erstelle ein neues Chunk-Objekt und speichere es
-//        DocumentChunk newChunk = new DocumentChunk(text);
-//        chunkBox.put(newChunk);
-//
-//    }
+    /**
+     * Fügt einen neuen Text-Chunk zur Datenbank hinzu.
+     * @param text Der Inhalt des Dokuments/Chunks.
+     * @return Die ID des neu erstellten Objekts.
+     */
+    public  long addDocument(String text) {
+        Logger.info("Entry in AddDocument Method!!!!!!!!!!!!!!!!");
+
+        if (this.boxStore == null) return -1;
+
+        // Hole die "Box" für unsere DocumentChunk-Entität
+        Box<DocumentChunk> chunkBox = this.boxStore.boxFor(DocumentChunk.class);
+
+        // Erstelle ein neues Chunk-Objekt und speichere es
+        DocumentChunk newChunk = new DocumentChunk(text);
+        chunkBox.put(newChunk);
+        return newChunk.id;
+    }
+
+    /**
+     * Durchsucht die Datenbank nach Chunks, die den Suchbegriff enthalten.
+     * @param query Der Suchbegriff.
+     * @return Eine Liste der passenden DocumentChunk-Objekte.
+     */
+    public List<DocumentChunk> searchDocuments(String query) {
+        if (this.boxStore == null) return java.util.Collections.emptyList();
+        Box<DocumentChunk> chunkBox = this.boxStore.boxFor(DocumentChunk.class);
+
+        // Führt eine einfache Textsuche durch (noch keine Vektorsuche)
+        return chunkBox.query(DocumentChunk_.content.contains(query, io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE))
+                .build()
+                .find();
+    }
 
 
-    
+
 }

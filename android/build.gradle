@@ -19,11 +19,7 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
-// apply plugin: 'io.objectbox'
-// // plugins {
-// //     id 'com.android.library'
-// //     id 'io.objectbox' version '3.8.0'
-// // }
+apply plugin: 'io.objectbox'
 
 android {
     namespace "com.thifuge.plugins.rag"
@@ -55,6 +51,11 @@ repositories {
     mavenCentral()
 }
 
+objectbox {
+    // Diese Option erstellt eine JSON-Datei mit deinem Datenmodell,
+    // die für Data Browser etc. nützlich ist.
+    debug = true
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
