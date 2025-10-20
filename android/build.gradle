@@ -66,6 +66,6 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
 
-    implementation "io.objectbox:objectbox-android:3.8.0"
-    annotationProcessor "io.objectbox:objectbox-processor:3.8.0"
+    implementation "io.objectbox:objectbox-android:5.0.1"
+    annotationProcessor "io.objectbox:objectbox-processor:5.0.1"
 }

@@ -20,11 +20,6 @@
           "indexId": "1:1159686270430599233",
           "type": 9,
           "flags": 2048
-        },
-        {
-          "id": "3:2486162530785622660",
-          "name": "contents",
-          "type": 9
         }
       ],
       "relations": []
@@ -42,7 +37,8 @@
   "retiredIndexUids": [],
   "retiredPropertyUids": [
     6256381419695617212,
-    69878468792904608
+    69878468792904608,
+    2486162530785622660
   ],
   "retiredRelationUids": [],
   "version": 1

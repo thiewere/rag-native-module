@@ -69,7 +69,8 @@ export class RagWeb extends WebPlugin implements RagPlugin {
   }
 
   async searchDocuments(options: { query: string; }): Promise<{ results: DocumentChunkResult[]}> {
-    let result = [options.query]
+    console.log("Web Fall-Back: " + options.query)
     return {results: []}
   }
+
 }

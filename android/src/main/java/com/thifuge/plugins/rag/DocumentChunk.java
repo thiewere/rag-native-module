@@ -1,6 +1,7 @@
 package com.thifuge.plugins.rag;
 
 import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.HnswIndex;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
 
@@ -17,12 +18,16 @@ public class DocumentChunk {
     @Index
     public String content;
 
-
+    // Neues Fel für die Vektoren
+    @HnswIndex(dimensions = 384)
+    public  float[] embedding;
 
     // Standard-Konstrutor wird von ObjectBox benötigt.
     public DocumentChunk() {}
 
-    public DocumentChunk(String content) {
+    public DocumentChunk(String content, float[] embedding) {
         this.content = content;
+        this.embedding = embedding;
+
     }
 }

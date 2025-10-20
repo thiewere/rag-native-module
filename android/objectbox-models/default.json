@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "2:1783179286622306270",
-      "lastPropertyId": "3:2486162530785622660",
+      "lastPropertyId": "4:4995035103158203956",
       "name": "DocumentChunk",
       "properties": [
         {
@@ -20,13 +20,20 @@
           "indexId": "1:1159686270430599233",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "4:4995035103158203956",
+          "name": "embedding",
+          "indexId": "2:5670988902281061374",
+          "type": 28,
+          "flags": 8
         }
       ],
       "relations": []
     }
   ],
   "lastEntityId": "2:1783179286622306270",
-  "lastIndexId": "1:1159686270430599233",
+  "lastIndexId": "2:5670988902281061374",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
