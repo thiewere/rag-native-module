@@ -89,12 +89,12 @@ runRagInference(options: { prompt: string; model: string; }) => Promise<{ text: 
 ### addDocument(...)
 
 ```typescript
-addDocument(options: { text: string; }) => Promise<{ success: boolean; id: number; }>
+addDocument(options: { text: string; model: string; }) => Promise<{ success: boolean; id: number; }>
 ```
 
-| Param         | Type                           |
-| ------------- | ------------------------------ |
-| **`options`** | <code>{ text: string; }</code> |
+| Param         | Type                                          |
+| ------------- | --------------------------------------------- |
+| **`options`** | <code>{ text: string; model: string; }</code> |
 
 **Returns:** <code>Promise&lt;{ success: boolean; id: number; }&gt;</code>
 

@@ -154,47 +154,49 @@ public class RagPlugin extends Plugin {
             return;
         }
 
-        if (!isContextInitialized) {
-           JSObject initParams = call.getData();
-           getLlamaCpp().initContext(CONTEXT_ID, initParams, result -> {
-               if (result.isSuccess()) {
-                   isContextInitialized = true;
+       Runnable getEmbedding = () -> {
+            getLlamaCpp().embedding(CONTEXT_ID, prompt, null, (embeddingResult) -> {
+               if (embeddingResult.isSuccess()) {
+                   Map<String, Object> data = embeddingResult.getData();
+                   List<Double> embeddingList = (List<Double>) data.get("embedding");
+                   float[] queryVector = new float[embeddingList.size()];
+                   for (int i = 0; i < embeddingList.size(); i++) {
+                       queryVector[i] = embeddingList.get(i).floatValue();
+                   }
+                   List<ObjectWithScore<DocumentChunk>> chunkList = implementation.searchDocs(prompt, queryVector);
+                   String kontext = "";
+                   for (ObjectWithScore<DocumentChunk> chunk : chunkList) {
+                      kontext += chunk.get().content;
+                   }
+
+                   String finalPrompt = implementation.runRagInference(prompt, model, kontext);
+
+                   JSObject ragCallData = new JSObject();
+                   ragCallData.put("prompt", finalPrompt);
+                   ragCallData.put("n_predict", call.getInt("n_predict", 150));
+                   call.getData().put("model", model);
+                   call.getData().put("prompt", finalPrompt);
+                   call.getData().put("n_predict", 150);
+                   this.runInference(call);
                } else {
-                   call.reject("Llama-Kontext konnte nicht initialisiert werden: " + result.getError().getMessage());
+                   call.reject(embeddingResult.getError().getMessage());
                }
-           });
+            });
+       };
+
+        if (!isContextInitialized) {
+            JSObject initParams = call.getData();
+            getLlamaCpp().initContext(CONTEXT_ID, initParams, result -> {
+                if (result.isSuccess()) {
+                    isContextInitialized = true;
+                    getEmbedding.run();
+                } else {
+                    call.reject("Llama-Kontext konnte nicht initialisiert werden: " + result.getError().getMessage());
+                }
+            });
+        } else {
+            getEmbedding.run();
         }
-
-
-
-        getLlamaCpp().embedding(CONTEXT_ID, prompt, null, (embeddingResult) -> {
-           if (embeddingResult.isSuccess()) {
-               Map<String, Object> data = embeddingResult.getData();
-               List<Double> embeddingList = (List<Double>) data.get("embedding");
-               float[] queryVector = new float[embeddingList.size()];
-               for (int i = 0; i < embeddingList.size(); i++) {
-                   queryVector[i] = embeddingList.get(i).floatValue();
-               }
-               List<ObjectWithScore<DocumentChunk>> chunkList = implementation.searchDocs(prompt, queryVector);
-               String kontext = "";
-               for (ObjectWithScore<DocumentChunk> chunk : chunkList) {
-                  kontext += chunk.get().content;
-               }
-
-               String finalPrompt = implementation.runRagInference(prompt, model, kontext);
-
-               JSObject ragCallData = new JSObject();
-               ragCallData.put("prompt", finalPrompt);
-               ragCallData.put("n_predict", call.getInt("n_predict", 200));
-               call.getData().put("model", model);
-               call.getData().put("prompt", finalPrompt);
-               call.getData().put("n_predict", 50);
-               this.runInference(call);
-           } else {
-               call.reject(embeddingResult.getError().getMessage());
-           }
-        });
-
     }
 
 //    @PluginMethod
@@ -236,41 +238,50 @@ public class RagPlugin extends Plugin {
     @PluginMethod
     public void addDocument(PluginCall call) {
         String text = call.getString("text");
+        String model = call.getString("model");
         if (text == null || text.isEmpty()) {
             call.reject("Bitte gib einen 'text' zum Hinzufügen an.");
             return;
         }
+
+        Runnable createEmbedding = () -> {
+            getLlamaCpp().embedding(CONTEXT_ID, text, null, (embeddingResult) -> {
+                if (embeddingResult.isSuccess()){
+                    System.out.println("Embedding erfolgreich!");
+                    Map<String, Object> data = embeddingResult.getData();
+                    List<Double> embeddingList = (List<Double>) data.get("embedding");
+                    float[] vector = new float[embeddingList.size()];
+                    for (int i = 0; i < embeddingList.size(); i++) {
+                        vector[i] = embeddingList.get(i).floatValue();
+                    }
+                   long chunkId = implementation.addDocs(text, vector);
+                    JSObject result = new JSObject();
+                    result.put("success", true);
+                    result.put("id", chunkId);
+                    call.getData().put("model", model);
+                    call.getData().put("id", chunkId);
+                    call.resolve(result);
+                } else {
+                    System.out.println("Embedding fehlgeschlagen!");
+                    call.reject(embeddingResult.getError().getMessage());
+                }
+            });
+        };
 
         if (!isContextInitialized) {
             JSObject initParams = call.getData();
             getLlamaCpp().initContext(CONTEXT_ID, initParams, result -> {
                 if (result.isSuccess()) {
                     isContextInitialized = true;
+                    createEmbedding.run();
                 } else {
                     call.reject("Llama-Kontext konnte nicht initialisiert werden: " + result.getError().getMessage());
                 }
             });
+        } else {
+            createEmbedding.run();
         }
-        getLlamaCpp().embedding(CONTEXT_ID, text, null, (embeddingResult) -> {
-            if (embeddingResult.isSuccess()){
-                System.out.println("Embedding erfolgreich!");
-                Map<String, Object> data = embeddingResult.getData();
-                List<Double> embeddingList = (List<Double>) data.get("embedding");
-                float[] vector = new float[embeddingList.size()];
-                for (int i = 0; i < embeddingList.size(); i++) {
-                    vector[i] = embeddingList.get(i).floatValue();
-                }
-               long chunkId = implementation.addDocs(text, vector);
-                JSObject result = new JSObject();
-                result.put("success", true);
-                result.put("id", chunkId);
-                call.getData().put("id", chunkId);
-                call.resolve(result);
-            } else {
-                System.out.println("Embedding fehlgeschlagen!");
-                call.reject(embeddingResult.getError().getMessage());
-            }
-        });
+
 
 //        JSObject ret = new JSObject();
 //        ret.put("id", implementation.addDocs(text));

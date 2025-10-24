@@ -8,7 +8,7 @@ export interface RagPlugin {
 
   runRagInference(options: {prompt: string, model: string}): Promise<{text: string}>;
 
-  addDocument(options: {text: string}): Promise<{ success: boolean, id: number }>;
+  addDocument(options: {text: string, model: string}): Promise<{ success: boolean, id: number }>;
   searchDocuments(options: {query: string}): Promise<{results: DocumentChunkResult[]}>;
 
 }
