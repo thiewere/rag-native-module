@@ -1,0 +1,1 @@
+D:\DFKI\ToHyVe\capacitor-plugin\rag-native-module\android\build\intermediates\cxx\Debug\3h71q5q4\obj\arm64-v8a

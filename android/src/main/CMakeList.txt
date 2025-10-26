@@ -1,0 +1,157 @@
+# Mindestversion für CMake festlegen
+cmake_minimum_required(VERSION 3.10)
+
+# Projektname
+project(rag-native-module)
+
+# C++ Standard
+set(CMAKE_CXX_STANDARD 17)
+
+# Pfad zum C++ Quellcode
+set(LLAMACPP_LIB_DIR ${CMAKE_SOURCE_DIR}/../../../cpp)
+
+# Header-Verzeichnisse einschließen
+include_directories(
+    ${LLAMACPP_LIB_DIR}
+    ${LLAMACPP_LIB_DIR}/ggml-cpu
+    ${LLAMACPP_LIB_DIR}/tools/mtmd
+)
+
+# Liste aller Quellcode-Dateien (identisch in beiden deinen Dateien)
+set(
+    SOURCE_FILES
+    ${LLAMACPP_LIB_DIR}/ggml.c
+    ${LLAMACPP_LIB_DIR}/ggml-alloc.c
+    ${LLAMACPP_LIB_DIR}/ggml-backend.cpp
+    ${LLAMACPP_LIB_DIR}/ggml-backend-reg.cpp
+    ${LLAMACPP_LIB_DIR}/ggml-cpu/amx/amx.cpp
+    ${LLAMACPP_LIB_DIR}/ggml-cpu/amx/mmq.cpp
+    ${LLAMACPP_LIB_DIR}/ggml-cpu/ggml-cpu.c
+    ${LLAMACPP_LIB_DIR}/ggml-cpu/ggml-cpu.cpp
+    ${LLAMACPP_LIB_DIR}/ggml-cpu/quants.c
+    ${LLAMACPP_LIB_DIR}/ggml-cpu/traits.cpp
+    ${LLAMACPP_LIB_DIR}/ggml-cpu/repack.cpp
+    ${LLAMACPP_LIB_DIR}/ggml-cpu/unary-ops.cpp
+    ${LLAMACPP_LIB_DIR}/ggml-cpu/binary-ops.cpp
+    ${LLAMACPP_LIB_DIR}/ggml-cpu/vec.cpp
+    ${LLAMACPP_LIB_DIR}/ggml-cpu/ops.cpp
+    ${LLAMACPP_LIB_DIR}/ggml-opt.cpp
+    ${LLAMACPP_LIB_DIR}/ggml-threading.cpp
+    ${LLAMACPP_LIB_DIR}/ggml-quants.c
+    ${LLAMACPP_LIB_DIR}/gguf.cpp
+    ${LLAMACPP_LIB_DIR}/log.cpp
+    ${LLAMACPP_LIB_DIR}/llama-impl.cpp
+    ${LLAMACPP_LIB_DIR}/chat-parser.cpp
+    ${LLAMACPP_LIB_DIR}/json-partial.cpp
+    ${LLAMACPP_LIB_DIR}/regex-partial.cpp
+    ${LLAMACPP_LIB_DIR}/tools/mtmd/mtmd.cpp
+    ${LLAMACPP_LIB_DIR}/tools/mtmd/mtmd-audio.cpp
+    ${LLAMACPP_LIB_DIR}/tools/mtmd/clip.cpp
+    ${LLAMACPP_LIB_DIR}/tools/mtmd/mtmd-helper.cpp
+    ${LLAMACPP_LIB_DIR}/llama-grammar.cpp
+    ${LLAMACPP_LIB_DIR}/llama-sampling.cpp
+    ${LLAMACPP_LIB_DIR}/llama-vocab.cpp
+    ${LLAMACPP_LIB_DIR}/llama-adapter.cpp
+    ${LLAMACPP_LIB_DIR}/llama-chat.cpp
+    ${LLAMACPP_LIB_DIR}/llama-context.cpp
+    ${LLAMACPP_LIB_DIR}/llama-arch.cpp
+    ${LLAMACPP_LIB_DIR}/llama-batch.cpp
+    ${LLAMACPP_LIB_DIR}/llama-cparams.cpp
+    ${LLAMACPP_LIB_DIR}/llama-hparams.cpp
+    ${LLAMACPP_LIB_DIR}/llama.cpp
+    ${LLAMACPP_LIB_DIR}/llama-model.cpp
+    ${LLAMACPP_LIB_DIR}/llama-model-loader.cpp
+    ${LLAMACPP_LIB_DIR}/llama-model-saver.cpp
+    ${LLAMACPP_LIB_DIR}/llama-kv-cache.cpp
+    ${LLAMACPP_LIB_DIR}/llama-kv-cache-iswa.cpp
+    ${LLAMACPP_LIB_DIR}/llama-memory-hybrid.cpp
+    ${LLAMACPP_LIB_DIR}/llama-memory-recurrent.cpp
+    ${LLAMACPP_LIB_DIR}/llama-mmap.cpp
+    ${LLAMACPP_LIB_DIR}/llama-vocab.cpp
+    ${LLAMACPP_LIB_DIR}/llama-memory.cpp
+    ${LLAMACPP_LIB_DIR}/llama-io.cpp
+    ${LLAMACPP_LIB_DIR}/llama-graph.cpp
+    ${LLAMACPP_LIB_DIR}/sampling.cpp
+    ${LLAMACPP_LIB_DIR}/unicode-data.cpp
+    ${LLAMACPP_LIB_DIR}/unicode.cpp
+    ${LLAMACPP_LIB_DIR}/common.cpp
+    ${LLAMACPP_LIB_DIR}/chat.cpp
+    ${LLAMACPP_LIB_DIR}/json-schema-to-grammar.cpp
+    ${LLAMACPP_LIB_DIR}/nlohmann/json.hpp
+    ${LLAMACPP_LIB_DIR}/nlohmann/json_fwd.hpp
+    ${LLAMACPP_LIB_DIR}/minja/minja.hpp
+    ${LLAMACPP_LIB_DIR}/minja/chat-template.hpp
+    ${LLAMACPP_LIB_DIR}/anyascii.c
+    ${LLAMACPP_LIB_DIR}/cap-llama.cpp
+    ${LLAMACPP_LIB_DIR}/cap-completion.cpp
+    ${LLAMACPP_LIB_DIR}/cap-tts.cpp
+    ${CMAKE_SOURCE_DIR}/jni-utils.h
+    ${CMAKE_SOURCE_DIR}/jni.cpp
+)
+
+# Android-spezifische Bibliotheken finden (für alle Architekturen)
+find_library(LOG_LIB log)
+find_library(ANDROID_LIB android)
+
+# ===================================================================
+# 💡 INTELLEGENTE LOGIK: Wähle die richtigen Einstellungen pro Architektur
+# ===================================================================
+
+# Prüfe, welche Architektur Android Studio/Gradle gerade bauen möchte
+if(ANDROID_ABI STREQUAL "arm64-v8a")
+    message(STATUS "Konfiguriere für ARM64 (arm64-v8a)")
+    set(OUTPUT_LIB_NAME "llama-cpp-arm64")
+    set(ARCH_COMPILE_FLAGS
+        -march=armv8-a
+        -mtune=cortex-a76
+        -O3 -DNDEBUG -fno-finite-math-only -funroll-loops
+        -DLM_GGML_USE_CPU
+        -DLM_GGML_CPU_GENERIC
+    )
+
+elseif(ANDROID_ABI STREQUAL "x86_64")
+    message(STATUS "Konfiguriere für x86_64 (64-Bit Emulator)")
+    set(OUTPUT_LIB_NAME "llama-cpp-x86_64")
+    set(ARCH_COMPILE_FLAGS
+        -march=x86-64 -mtune=generic
+        -mavx2 -mavx -msse3 -msse -mfma -mf16c
+        -O3 -DNDEBUG
+        -DLM_GGML_USE_CPU
+        -DLM_GGML_CPU_GENERIC
+        -DLM_GGML_USE_AVX2
+        -DLM_GGML_USE_AVX
+        -DLM_GGML_USE_SSE3
+        -DLM_GGML_USE_SSE
+        -DLM_GGML_USE_FMA
+        -DLM_GGML_USE_F16C
+    )
+
+# Füge hier bei Bedarf weitere Architekturen hinzu (z.B. armeabi-v7a)
+
+else()
+    message(FATAL_ERROR "Unbekannte oder nicht unterstützte Android-Architektur: ${ANDROID_ABI}")
+endif()
+
+# ===================================================================
+#  Baue die Bibliothek einmalig mit den oben gesetzten Variablen
+# ===================================================================
+
+add_library(
+    llama-cpp-lib # Logischer Name
+    SHARED
+    ${SOURCE_FILES}
+)
+
+# Wende die architektur-spezifischen Compiler-Flags an
+target_compile_options(llama-cpp-lib PRIVATE ${ARCH_COMPILE_FLAGS})
+
+# Verlinke die Android-Bibliotheken
+target_link_libraries(llama-cpp-lib PRIVATE
+    ${LOG_LIB}
+    ${ANDROID_LIB}
+)
+
+# Setze den finalen Dateinamen
+set_target_properties(llama-cpp-lib PROPERTIES
+    OUTPUT_NAME ${OUTPUT_LIB_NAME}
+)

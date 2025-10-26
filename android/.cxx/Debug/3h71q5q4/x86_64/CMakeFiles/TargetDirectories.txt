@@ -1,0 +1,3 @@
+D:/DFKI/ToHyVe/capacitor-plugin/rag-native-module/android/.cxx/Debug/3h71q5q4/x86_64/CMakeFiles/llama-cpp-lib.dir
+D:/DFKI/ToHyVe/capacitor-plugin/rag-native-module/android/.cxx/Debug/3h71q5q4/x86_64/CMakeFiles/edit_cache.dir
+D:/DFKI/ToHyVe/capacitor-plugin/rag-native-module/android/.cxx/Debug/3h71q5q4/x86_64/CMakeFiles/rebuild_cache.dir
